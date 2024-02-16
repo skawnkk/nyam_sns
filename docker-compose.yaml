@@ -1,0 +1,17 @@
+services:
+  postgress:
+    image: postgres:15
+    restart: always
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+# //postgress 15버전의 이미지를 사용하여
+# //postgress-data 폴더와 이미지 상 데이터 폴더 /var/lib/postgresql/data 일치
+# //양쪽 데이터의 변경이 동일하게 발생한다.
+# //host의 port와 이미지 내 port와 일치 시킴 ( 전달 )
+# //환경 정의 기본 사용자 이름
