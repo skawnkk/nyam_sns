@@ -6,11 +6,6 @@ import { UsersDto } from "./dto/users.dto";
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  postUsers(@Body("nickname") nickname: string, @Body("email") email: string, @Body("password") password: string) {
-    return this.usersService.postUsers(nickname, email, password);
-  }
-
   @Get()
   getUsers() {
     return this.usersService.getUsers();
