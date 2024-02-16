@@ -57,4 +57,38 @@ export class AuthService {
     const newUser = await this.usersService.postUsers({ ...users, password: hash });
     return this.loginUser(newUser);
   }
+
+  //token parsing header:"Bearer ${token}", "Basic ${token}"
+  extractTokenFromHeader(header: string, isBearer: boolean) {
+    const splitToken = header.split(" ");
+    const prefix = isBearer ? "Bearer" : "Basic";
+    if (splitToken.length !== 2 || splitToken[0] !== prefix) {
+      throw new UnauthorizedException("Invalid token format");
+    }
+    return splitToken[1];
+  }
+
+  decodeBasicToken(base64String: string) {
+    const decoded = Buffer.from(base64String, "base64").toString("utf-8") || "";
+    const split = decoded.split(":");
+    if (split.length !== 2) {
+      throw new UnauthorizedException("Invalid token format");
+    }
+    return { email: split[0], password: split[1] };
+  }
+
+  //token 검증
+  verifyToken(token: string) {
+    return this.jwtService.verify(token, { secret: JWT_SECRET });
+  }
+
+  //token 재발급
+  //refresh -> refresh & access
+  rotateToken(token: string, isRefreshToken: boolean) {
+    const payload = this.verifyToken(token);
+    if (payload.type !== "refresh") {
+      throw new UnauthorizedException("refresh token required");
+    }
+    return this.signToken({ ...payload }, isRefreshToken);
+  }
 }

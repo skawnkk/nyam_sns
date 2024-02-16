@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Head, Headers, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { UsersModel } from "src/users/entities/users.entity";
 
@@ -6,13 +6,27 @@ import { UsersModel } from "src/users/entities/users.entity";
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Post("token/access")
+  postTokenAccess(@Headers("authorization") rawToken: string) {
+    const token = this.authService.extractTokenFromHeader(rawToken, true);
+    return { accessToken: this.authService.rotateToken(token, false) };
+  }
+
+  @Post("token/refresh")
+  postRefreshAccess(@Headers("authorization") rawToken: string) {
+    const token = this.authService.extractTokenFromHeader(rawToken, true);
+    return { refreshToken: this.authService.rotateToken(token, true) };
+  }
+
   @Post("login/email")
-  loginWithEmail(@Body() users: Pick<UsersModel, "email" | "password">) {
-    return this.authService.loginWithEmail(users);
+  async postLoginWithEmail(@Headers("authorization") rawToken: string) {
+    const token = this.authService.extractTokenFromHeader(rawToken, false);
+    const credentials = this.authService.decodeBasicToken(token);
+    return this.authService.loginWithEmail(credentials);
   }
 
   @Post("register/email")
-  registerWithEmail(@Body() users: Pick<UsersModel, "email" | "password" | "nickname">) {
+  postRegisterWithEmail(@Body() users: Pick<UsersModel, "email" | "password" | "nickname">) {
     return this.authService.registerWithEmail(users);
   }
 }
