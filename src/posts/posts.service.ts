@@ -3,6 +3,7 @@ import { Repository } from "typeorm";
 import { PostsModel } from "./entities/posts.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreatePostDto } from "./dto/create-post.dto";
+import { UpdatePostDto } from "./dto/update-post.dto";
 
 export interface PostModel {
   author: string;
@@ -47,8 +48,9 @@ export class PostsService {
     return newPost;
   }
 
-  //*save -> id가 있을 때엔 수정/ id가 없으면 생성
-  async putPost(id: number, title: string, content: string) {
+  //*put:save -> id가 있을 때엔 수정/ id가 없으면 생성
+  //*patch:save -> id가 있을 때엔 수정/ 아니면 에러
+  async patchPost(id: number, { content, title }: UpdatePostDto) {
     const post = await this.postsRepository.findOne({
       where: {
         id,

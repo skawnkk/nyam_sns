@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Request, Param, ParseIntPipe, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Request, Param, ParseIntPipe, Post, Put, UseGuards, Patch } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { AccessTokenGuard } from "src/auth/guard/bearer-token.guard";
 import { UsersModel } from "src/users/entities/users.entity";
 import { User } from "src/users/decorator/user.decorator";
 import { CreatePostDto } from "./dto/create-post.dto";
+import { UpdatePostDto } from "./dto/update-post.dto";
 
 @Controller("posts")
 export class PostsController {
@@ -25,10 +26,10 @@ export class PostsController {
     return this.postsService.postPosts({ authorId, body });
   }
 
-  @Put(":id")
+  @Patch(":id")
   @UseGuards(AccessTokenGuard)
-  putPost(@Param("id", ParseIntPipe) id: number, @Body("title") title?: string, @Body("content") content?: string) {
-    return this.postsService.putPost(id, title, content);
+  patchPost(@Param("id", ParseIntPipe) id: number, @Body() body: UpdatePostDto) {
+    return this.postsService.patchPost(id, body);
   }
 
   @Delete(":id")

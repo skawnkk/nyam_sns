@@ -4,6 +4,8 @@ import { UsersModel } from "src/users/entities/users.entity";
 import { HASH_ROUNDS, JWT_SECRET } from "./const/auth.const";
 import { UsersService } from "src/users/users.service";
 import * as bcrypt from "bcrypt";
+import { CreateUserDto } from "src/users/dto/create-user.dto";
+import { UpdateUserDto } from "src/users/dto/update-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -32,7 +34,7 @@ export class AuthService {
     };
   }
 
-  async authenticateWithEmailAndPassword(user: Pick<UsersModel, "email" | "password">) {
+  async authenticateWithEmailAndPassword(user: UpdateUserDto) {
     //email로 사용자를 찾는다.
     const existingUser = await this.usersService.getUserByEmail(user.email);
     if (!existingUser) {
@@ -47,12 +49,12 @@ export class AuthService {
     return existingUser;
   }
 
-  async loginWithEmail(users: Pick<UsersModel, "email" | "password">) {
+  async loginWithEmail(users: UpdateUserDto) {
     const existingUser = await this.authenticateWithEmailAndPassword(users);
     return this.loginUser(existingUser);
   }
 
-  async registerWithEmail(users: Pick<UsersModel, "email" | "password" | "nickname">) {
+  async registerWithEmail(users: CreateUserDto) {
     const hash = await bcrypt.hash(users.password, HASH_ROUNDS); //round:10 -> 2^10번 해싱, 높을 수록 속도가 느려진다. salt는 .hash()에서 자동으로 생성한다.
     const newUser = await this.usersService.postUsers({ ...users, password: hash });
     return this.loginUser(newUser);

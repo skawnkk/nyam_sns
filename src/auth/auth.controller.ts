@@ -1,8 +1,8 @@
 import { Body, Controller, Headers, Post, UseGuards, Request } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { MaxLengthPipe, MinLengthPipe } from "./pipe/password.pipe";
 import { BasicTokenGuard } from "./guard/basic-token.guard";
 import { RefreshTokenGuard } from "./guard/bearer-token.guard";
+import { CreateUserDto } from "src/users/dto/create-user.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -24,18 +24,14 @@ export class AuthController {
 
   @Post("login/email")
   @UseGuards(BasicTokenGuard)
-  async postLoginWithEmail(@Headers("authorization") rawToken: string, @Request() req: any) {
+  async postLoginWithEmail(@Headers("authorization") rawToken: string) {
     const token = this.authService.extractTokenFromHeader(rawToken, false);
     const credentials = this.authService.decodeBasicToken(token);
     return this.authService.loginWithEmail(credentials);
   }
 
   @Post("register/email")
-  postRegisterWithEmail(
-    @Body("email") email: string,
-    @Body("password", new MaxLengthPipe(20, "password"), new MinLengthPipe(8, "password")) password: string,
-    @Body("nickname") nickname: string,
-  ) {
-    return this.authService.registerWithEmail({ email, password, nickname });
+  postRegisterWithEmail(@Body() createUserDto: CreateUserDto) {
+    return this.authService.registerWithEmail(createUserDto);
   }
 }
