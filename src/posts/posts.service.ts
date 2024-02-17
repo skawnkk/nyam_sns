@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { postDto } from "./posts.dto";
 import { Repository } from "typeorm";
 import { PostsModel } from "./entities/posts.entity";
 import { InjectRepository } from "@nestjs/typeorm";
+import { CreatePostDto } from "./dto/create-post.dto";
 
 export interface PostModel {
   author: string;
@@ -39,8 +39,8 @@ export class PostsService {
   }
 
   //data를 생성하고 저장한다.
-  async postPosts({ authorId, title, content }: postDto) {
-    const post = this.postsRepository.create({ author: { id: authorId }, title, content, likeCount: 0, commentCount: 0 });
+  async postPosts({ authorId, body }: { authorId: number; body: CreatePostDto }) {
+    const post = this.postsRepository.create({ author: { id: authorId }, ...body, likeCount: 0, commentCount: 0 });
 
     const newPost = await this.postsRepository.save(post);
 
