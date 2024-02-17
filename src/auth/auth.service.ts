@@ -77,9 +77,22 @@ export class AuthService {
     return { email: split[0], password: split[1] };
   }
 
+  decodeBearerToken(base64String: string) {
+    const decoded = Buffer.from(base64String, "base64").toString("utf-8") || "";
+    const split = decoded.split(":");
+    if (split.length !== 2) {
+      throw new UnauthorizedException("Invalid token format");
+    }
+    return { email: split[0], password: split[1] };
+  }
+
   //token 검증
   verifyToken(token: string) {
-    return this.jwtService.verify(token, { secret: JWT_SECRET });
+    try {
+      return this.jwtService.verify(token, { secret: JWT_SECRET });
+    } catch {
+      throw new UnauthorizedException("Token is expired or invalid");
+    }
   }
 
   //token 재발급
