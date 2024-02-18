@@ -7,6 +7,7 @@ import { IsEmail, IsString, Length } from "class-validator";
 import { lengthValidationMessage } from "src/common/validation-message/length-validation.message";
 import { typeValidationMessage } from "src/common/validation-message/type-validation.message";
 import { emailValidationMessage } from "src/common/validation-message/email-validation.message";
+import { Exclude, Expose } from "class-transformer";
 
 @Entity()
 export class UsersModel extends BaseModel {
@@ -25,6 +26,11 @@ export class UsersModel extends BaseModel {
   })
   @Column({ unique: true })
   email: string;
+
+  @Expose({ toPlainOnly: true })
+  get nicknameAndEmail() {
+    return `${this.nickname} ${this.email}`;
+  }
 
   @Length(8, 20, {
     message: lengthValidationMessage,

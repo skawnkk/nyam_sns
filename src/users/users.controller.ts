@@ -1,6 +1,5 @@
-import { Controller, Get, Param, ParseIntPipe, Post, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, ParseIntPipe, Post, UseGuards, UseInterceptors } from "@nestjs/common";
 import { UsersService } from "./users.service";
-import { UsersDto } from "./dto/users.dto";
 
 @Controller("users")
 export class UsersController {
