@@ -5,7 +5,14 @@ import { ValidationPipe } from "@nestjs/common";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true, //entitiy의 지정 기본값이 반영되도록 함
+      transformOptions: {
+        enableImplicitConversion: true, //요청값을 자동으로 변환 @IsNumber => number로 인식,  @Type(() => Number)을 사용할 필요가 없다.
+      },
+    }),
+  );
 
   await app.listen(3000);
 }

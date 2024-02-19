@@ -1,9 +1,11 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { Repository } from "typeorm";
+import { LessThan, MoreThan, Repository } from "typeorm";
 import { PostsModel } from "./entities/posts.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
+import { PaginatePostDto } from "./dto/patinate-post.dto";
+import { HOST, PROTOCOL } from "src/common/const/common.const";
 
 export interface PostModel {
   author: string;
@@ -24,6 +26,48 @@ export class PostsService {
     return this.postsRepository.find({ relations: ["author"] });
   }
 
+  async generatePosts(userId: number) {
+    for (let i = 0; i < 100; i++) {
+      this.postPosts(userId, { title: `title${i}`, content: `content${i}` });
+    }
+  }
+
+  async paginatePosts(dto: PaginatePostDto) {
+    const { where__id_more_than, order__createdAt, take } = dto;
+    const whereIdMoreThan = where__id_more_than ?? 0; //naming - underscore 2개 - 다음객채의 속성을 참조한다.
+    const posts = await this.postsRepository.find({
+      where: {
+        id: order__createdAt === "ASC" ? MoreThan(whereIdMoreThan) : LessThan(whereIdMoreThan),
+      },
+      order: {
+        createdAt: order__createdAt,
+      },
+      take,
+      relations: ["author"],
+    });
+
+    const lastItem = posts.length > 0 && posts.length === take ? posts[posts.length - 1] : null;
+    const nextUrl = lastItem && new URL(`${PROTOCOL}://${HOST}/posts`);
+    if (nextUrl) {
+      for (const key of Object.keys(dto)) {
+        if (dto[key]) {
+          if (key !== "where__id_more_than") {
+            nextUrl.searchParams.append(key, dto[key]);
+          }
+        }
+      }
+      nextUrl.searchParams.append("where__id_more_than", lastItem.id.toString());
+    }
+    return {
+      data: posts,
+      count: posts.length,
+      cursor: {
+        after: lastItem?.id ?? null,
+      },
+      next: nextUrl?.toString() ?? null,
+    };
+  }
+
   async getPost(id: number) {
     const post = await this.postsRepository.findOne({
       where: {
@@ -40,8 +84,13 @@ export class PostsService {
   }
 
   //data를 생성하고 저장한다.
-  async postPosts({ authorId, body }: { authorId: number; body: CreatePostDto }) {
-    const post = this.postsRepository.create({ author: { id: authorId }, ...body, likeCount: 0, commentCount: 0 });
+  async postPosts(authorId: number, body: CreatePostDto) {
+    const post = this.postsRepository.create({
+      author: { id: authorId },
+      ...body,
+      likeCount: 0,
+      commentCount: 0,
+    });
 
     const newPost = await this.postsRepository.save(post);
 
