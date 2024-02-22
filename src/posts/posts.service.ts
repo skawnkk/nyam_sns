@@ -32,7 +32,22 @@ export class PostsService {
     }
   }
 
-  async paginatePosts(dto: PaginatePostDto) {
+  async pagePaginatePosts(dto: PaginatePostDto) {
+    const { page, take, order__createdAt } = dto;
+
+    const [posts, count] = await this.postsRepository.findAndCount({
+      order: { createdAt: order__createdAt },
+      take,
+      skip: (page - 1) * take,
+    });
+
+    return {
+      data: posts,
+      total: count,
+    };
+  }
+
+  async cursorPaginatePosts(dto: PaginatePostDto) {
     const { where__id_more_than, order__createdAt, take } = dto;
     const whereIdMoreThan = where__id_more_than ?? 0; //naming - underscore 2개 - 다음객채의 속성을 참조한다.
     const posts = await this.postsRepository.find({
@@ -66,6 +81,14 @@ export class PostsService {
       },
       next: nextUrl?.toString() ?? null,
     };
+  }
+
+  async paginatePosts(dto: PaginatePostDto) {
+    if (dto.page) {
+      return this.pagePaginatePosts(dto);
+    } else {
+      return this.cursorPaginatePosts(dto);
+    }
   }
 
   async getPost(id: number) {
