@@ -1,17 +1,19 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { UsersModel } from "src/users/entities/users.entity";
-import { HASH_ROUNDS, JWT_SECRET } from "./const/auth.const";
 import { UsersService } from "src/users/users.service";
 import * as bcrypt from "bcrypt";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { UpdateUserDto } from "src/users/dto/update-user.dto";
+import { ConfigService } from "@nestjs/config";
+import { ENV_HASH_ROUNDS_KEY, ENV_JWT_SECRET_KEY } from "src/common/const/env-keys.const";
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
+    private readonly configService: ConfigService,
   ) {}
 
   //accessToken, refreshToken을 생성하는 메소드
@@ -23,7 +25,7 @@ export class AuthService {
       type: isRefreshToken ? "refresh" : "access",
     };
 
-    return this.jwtService.sign(payload, { secret: JWT_SECRET, expiresIn: isRefreshToken ? 3600 : 300 });
+    return this.jwtService.sign(payload, { secret: this.configService.get(ENV_JWT_SECRET_KEY), expiresIn: isRefreshToken ? 3600 : 300 });
   }
 
   //accessToken, refreshToken을 반환하는 메소드
@@ -55,7 +57,7 @@ export class AuthService {
   }
 
   async registerWithEmail(users: CreateUserDto) {
-    const hash = await bcrypt.hash(users.password, HASH_ROUNDS); //round:10 -> 2^10번 해싱, 높을 수록 속도가 느려진다. salt는 .hash()에서 자동으로 생성한다.
+    const hash = await bcrypt.hash(users.password, this.configService.get(ENV_HASH_ROUNDS_KEY)); //round:10 -> 2^10번 해싱, 높을 수록 속도가 느려진다. salt는 .hash()에서 자동으로 생성한다.
     const newUser = await this.usersService.postUsers({ ...users, password: hash });
     return this.loginUser(newUser);
   }
@@ -91,7 +93,7 @@ export class AuthService {
   //token 검증
   verifyToken(token: string) {
     try {
-      return this.jwtService.verify(token, { secret: JWT_SECRET });
+      return this.jwtService.verify(token, { secret: this.configService.get(ENV_JWT_SECRET_KEY) });
     } catch {
       throw new UnauthorizedException("Token is expired or invalid");
     }
