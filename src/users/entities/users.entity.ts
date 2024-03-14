@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany } from "typeorm";
 import { RolesEnum } from "../const/roles.const";
 import { PostModel } from "src/posts/posts.service";
 import { PostsModel } from "src/posts/entities/posts.entity";
-import { BaseModel } from "src/common/entities/common.entity";
+import { BaseModel } from "src/common/entities/base.entity";
 import { IsEmail, IsString, Length } from "class-validator";
 import { lengthValidationMessage } from "src/common/validation-message/length-validation.message";
 import { typeValidationMessage } from "src/common/validation-message/type-validation.message";

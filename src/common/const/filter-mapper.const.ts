@@ -1,0 +1,33 @@
+import {
+  Not,
+  Any,
+  ArrayContainedBy,
+  ArrayContains,
+  Like,
+  MoreThan,
+  MoreThanOrEqual,
+  LessThan,
+  Equal,
+  ILike,
+  ArrayOverlap,
+  Between,
+  In,
+  IsNull,
+} from "typeorm";
+
+export const FILTER_MAPPER = {
+  not: Not,
+  any: Any,
+  less_than: LessThan,
+  more_than: MoreThan,
+  more_than_or_equal: MoreThanOrEqual,
+  equal: Equal,
+  like: Like,
+  i_like: ILike,
+  between: Between,
+  in: In,
+  is_null: IsNull,
+  array_contains: ArrayContains,
+  array_contained_by: ArrayContainedBy,
+  array_overlap: ArrayOverlap,
+};

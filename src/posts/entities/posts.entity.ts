@@ -1,5 +1,5 @@
 import { IsString } from "class-validator";
-import { BaseModel } from "src/common/entities/common.entity";
+import { BaseModel } from "src/common/entities/base.entity";
 import { typeValidationMessage } from "src/common/validation-message/type-validation.message";
 import { UsersModel } from "src/users/entities/users.entity";
 import { Column, Entity, ManyToOne } from "typeorm";
