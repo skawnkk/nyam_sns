@@ -117,6 +117,8 @@ export class CommonService {
       if (operator === "between") {
         //<-필요한 경우 처리 추가
         options[field] = FILTER_MAPPER[operator](values[0], values[1]);
+      } else if (operator === "i_like") {
+        options[field] = FILTER_MAPPER[operator](`%${value}%`);
       } else {
         options[field] = FILTER_MAPPER[operator](value);
       }
