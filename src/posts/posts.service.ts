@@ -4,7 +4,7 @@ import { PostsModel } from "./entities/posts.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
-import { PaginatePostDto } from "./dto/patinate-post.dto";
+import { PaginatePostDto } from "./dto/paginate-post.dto";
 import { CommonService } from "src/common/common.service";
 
 export interface PostModel {
@@ -34,7 +34,7 @@ export class PostsService {
   }
 
   async paginatePosts(dto: PaginatePostDto) {
-    return this.commonService.paginate(dto, this.postsRepository, {}, "posts");
+    return this.commonService.paginate(dto, this.postsRepository, { relations: ["author"] }, "posts");
   }
 
   async getPost(id: number) {
