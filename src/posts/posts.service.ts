@@ -53,12 +53,13 @@ export class PostsService {
   }
 
   //data를 생성하고 저장한다.
-  async postPosts(authorId: number, body: CreatePostDto) {
+  async postPosts(authorId: number, body: CreatePostDto, image?: string) {
     const post = this.postsRepository.create({
       author: { id: authorId },
       ...body,
       likeCount: 0,
       commentCount: 0,
+      image,
     });
 
     const newPost = await this.postsRepository.save(post);

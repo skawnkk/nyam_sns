@@ -21,6 +21,11 @@ export class PostsModel extends BaseModel {
   })
   content: string;
 
+  @Column({
+    nullable: true, // 이미지가 없을 경우 null로 전달
+  })
+  image?: string;
+
   @Column()
   likeCount: number;
 
