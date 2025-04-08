@@ -1,19 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Request,
-  Param,
-  ParseIntPipe,
-  Post,
-  Put,
-  UseGuards,
-  Patch,
-  Query,
-  UseInterceptors,
-  UploadedFile,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards, Patch, Query, UseInterceptors, UploadedFile } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { AccessTokenGuard } from "src/auth/guard/bearer-token.guard";
 import { UsersModel } from "src/users/entities/users.entity";

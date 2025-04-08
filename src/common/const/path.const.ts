@@ -18,6 +18,9 @@ export const PUBLIC_FOLDER_PATH = join(PROJECT_ROOT_PATH, PUBLIC_FOLDER_NAME);
 // 포스트 이미지를 저장할 폴더 /{프로젝트의 위치}/public/posts
 export const POST_IMAGE_PATH = join(PUBLIC_FOLDER_PATH, POSTS_FOLDER_NAME);
 
+// 임시 파일들을 저장할 폴더 (모듈에 Multer가 등록되지 않은 상태 > 1차적으로 임시폴더에 저장)
+export const TEMP_FOLDER_PATH = join(PUBLIC_FOLDER_NAME, TEMP_FOLDER_NAME);
+
 // 절대경로 x
 // 포스트 이미지 경로 ex: {프론트서버주소}/public/posts/xxx.jpg
 export const POST_PUBLIC_IMAGE_PATH = join(PUBLIC_FOLDER_NAME, POSTS_FOLDER_NAME);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { BasePaginationDto } from "./dto/base-pagination.dto";
 import { FindManyOptions, FindOptionsOrder, FindOptionsWhere, Repository } from "typeorm";
