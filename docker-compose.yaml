@@ -10,8 +10,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
-# //postgress 15버전의 이미지를 사용하여
-# //postgress-data 폴더와 이미지 상 데이터 폴더 /var/lib/postgresql/data 일치
-# //양쪽 데이터의 변경이 동일하게 발생한다.
-# //host의 port와 이미지 내 port와 일치 시킴 ( 전달 )
-# //환경 정의 기본 사용자 이름
+# postgress 15버전의 이미지를 사용하여
+# ":"를 기준으로 양쪽 데이터의 변경이 동일하게 발생한다.
+# 좌측 - postgress-data 폴더, 우측 - 도커 이미지 상 데이터 폴더 /var/lib/postgresql/data 일치
+# host의 port와 이미지 내 port와 일치 시킴 ( 전달 )
+# 환경 정의 기본 사용자 이름
