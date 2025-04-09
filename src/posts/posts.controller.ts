@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards, Patch, Query, UseInterceptors, UploadedFile } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, UseGuards, Patch, Query } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { AccessTokenGuard } from "src/auth/guard/bearer-token.guard";
 import { UsersModel } from "src/users/entities/users.entity";
@@ -6,7 +6,6 @@ import { User } from "src/users/decorator/user.decorator";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { PaginatePostDto } from "./dto/paginate-post.dto";
-import { FileInterceptor } from "@nestjs/platform-express";
 
 @Controller("posts")
 export class PostsController {
@@ -31,9 +30,9 @@ export class PostsController {
 
   @Post()
   @UseGuards(AccessTokenGuard)
-  @UseInterceptors(FileInterceptor("image"))
-  postPosts(@User("id", ParseIntPipe) authorId: UsersModel["id"], @Body() body: CreatePostDto, @UploadedFile() file?: Express.Multer.File) {
-    return this.postsService.postPosts(authorId, body, file?.filename);
+  async postPosts(@User("id", ParseIntPipe) authorId: UsersModel["id"], @Body() body: CreatePostDto) {
+    await this.postsService.createPostImage(body); // post 생성 전 이미지 생성 (temp > public/post path로 이동)
+    return this.postsService.postPosts(authorId, body);
   }
 
   @Patch(":id")
