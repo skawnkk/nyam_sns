@@ -3,9 +3,10 @@ import { IsString } from "class-validator";
 import { join } from "path";
 import { POST_PUBLIC_IMAGE_PATH } from "src/common/const/path.const";
 import { BaseModel } from "src/common/entities/base.entity";
+import { ImageModel } from "src/common/entities/image.entity";
 import { typeValidationMessage } from "src/common/validation-message/type-validation.message";
 import { UsersModel } from "src/users/entities/users.entity";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 
 @Entity()
 export class PostsModel extends BaseModel {
@@ -35,4 +36,7 @@ export class PostsModel extends BaseModel {
 
   @Column()
   commentCount: number;
+
+  @OneToMany((type) => ImageModel, (image) => image.post)
+  images?: ImageModel[];
 }
