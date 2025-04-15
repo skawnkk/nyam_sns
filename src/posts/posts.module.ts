@@ -12,6 +12,7 @@ import { extname, join } from "path";
 import * as multer from "multer";
 import { POST_PUBLIC_IMAGE_PATH } from "src/common/const/path.const";
 import { v4 as uuid } from "uuid";
+import { ImageModel } from "src/common/entities/image.entity";
 
 //미들웨어는 모듈에서 등록해주고, 적용할 method, route 정보를 전달해야한다.
 //가장 먼저 적용된다. (middleware > interceptors > pipe ...)
@@ -19,7 +20,7 @@ import { v4 as uuid } from "uuid";
 @Module({
   //NOTE: 중요_accessTokenGuard에서 사용하기 위해 AuthModule, userModel을 import
   imports: [
-    TypeOrmModule.forFeature([PostsModel]),
+    TypeOrmModule.forFeature([PostsModel, ImageModel]),
     AuthModule,
     UsersModule,
     CommonModule,

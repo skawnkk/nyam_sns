@@ -6,6 +6,7 @@ import { User } from "src/users/decorator/user.decorator";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { PaginatePostDto } from "./dto/paginate-post.dto";
+import { ImageModelType } from "src/common/entities/image.entity";
 
 @Controller("posts")
 export class PostsController {
@@ -18,21 +19,26 @@ export class PostsController {
 
   @Get(":id")
   async getPost(@Param("id", ParseIntPipe) id: number) {
-    return this.postsService.getPost(id);
+    return this.postsService.getPostById(id);
   }
 
   @Post("random")
   @UseGuards(AccessTokenGuard)
-  async postPostsRandom(@User() user: UsersModel) {
+  async createPostsRandom(@User() user: UsersModel) {
     await this.postsService.generatePosts(user.id);
     return true;
   }
 
   @Post()
   @UseGuards(AccessTokenGuard)
-  async postPosts(@User("id", ParseIntPipe) authorId: UsersModel["id"], @Body() body: CreatePostDto) {
-    await this.postsService.createPostImage(body); // post 생성 전 이미지 생성 (temp > public/post path로 이동)
-    return this.postsService.postPosts(authorId, body);
+  async createPost(@User("id", ParseIntPipe) authorId: UsersModel["id"], @Body() body: CreatePostDto) {
+    const post = await this.postsService.createPost(authorId, body);
+
+    for (let i = 0; i < body.images.length, i++; ) {
+      await this.postsService.createPostImage({ order: i, type: ImageModelType.POST_IMAGE, path: body.images[i], post }); // post 생성 전 이미지 생성 (temp > public/post path로 이동)
+    }
+
+    return this.postsService.getPostById(post.id);
   }
 
   @Patch(":id")

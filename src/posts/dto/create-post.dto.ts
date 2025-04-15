@@ -7,7 +7,7 @@ import { PickType } from "@nestjs/mapped-types";
 //Pick, Omit, Partial-> type반환
 //PickType, OmitType, PartialType => class 반환 (dto 재사용 및 유효성 검증 유지)
 export class CreatePostDto extends PickType(PostsModel, ["title", "content"]) {
-  @IsString()
+  @IsString({ each: true })
   @IsOptional()
-  image?: string;
+  images: string[] = [];
 }

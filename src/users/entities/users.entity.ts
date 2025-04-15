@@ -1,13 +1,12 @@
 import { Column, Entity, OneToMany } from "typeorm";
 import { RolesEnum } from "../const/roles.const";
-import { PostModel } from "src/posts/posts.service";
 import { PostsModel } from "src/posts/entities/posts.entity";
 import { BaseModel } from "src/common/entities/base.entity";
 import { IsEmail, IsString, Length } from "class-validator";
 import { lengthValidationMessage } from "src/common/validation-message/length-validation.message";
 import { typeValidationMessage } from "src/common/validation-message/type-validation.message";
 import { emailValidationMessage } from "src/common/validation-message/email-validation.message";
-import { Exclude, Expose } from "class-transformer";
+import { Expose } from "class-transformer";
 
 @Entity()
 export class UsersModel extends BaseModel {
@@ -45,5 +44,5 @@ export class UsersModel extends BaseModel {
   role: RolesEnum;
 
   @OneToMany(() => PostsModel, (post) => post.author)
-  posts: PostModel[];
+  posts: PostsModel[];
 }
