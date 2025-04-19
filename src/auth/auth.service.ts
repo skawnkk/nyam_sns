@@ -57,7 +57,7 @@ export class AuthService {
   }
 
   async registerWithEmail(users: CreateUserDto) {
-    const hash = await bcrypt.hash(users.password, this.configService.get(ENV_HASH_ROUNDS_KEY)); //round:10 -> 2^10번 해싱, 높을 수록 속도가 느려진다. salt는 .hash()에서 자동으로 생성한다.
+    const hash = await bcrypt.hash(users.password, Number(this.configService.get(ENV_HASH_ROUNDS_KEY))); //round:10 -> 2^10번 해싱, 높을 수록 속도가 느려진다. salt는 .hash()에서 자동으로 생성한다.
     const newUser = await this.usersService.postUsers({ ...users, password: hash });
     return this.loginUser(newUser);
   }
@@ -66,9 +66,11 @@ export class AuthService {
   extractTokenFromHeader(header: string, isBearer: boolean) {
     const splitToken = header.split(" ");
     const prefix = isBearer ? "Bearer" : "Basic";
+
     if (splitToken.length !== 2 || splitToken[0] !== prefix) {
       throw new UnauthorizedException("Invalid token format");
     }
+
     return splitToken[1];
   }
 

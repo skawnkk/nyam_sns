@@ -13,6 +13,7 @@ import * as multer from "multer";
 import { POST_PUBLIC_IMAGE_PATH } from "src/common/const/path.const";
 import { v4 as uuid } from "uuid";
 import { ImageModel } from "src/common/entities/image.entity";
+import { PostImagesService } from "./image/images.service";
 
 //미들웨어는 모듈에서 등록해주고, 적용할 method, route 정보를 전달해야한다.
 //가장 먼저 적용된다. (middleware > interceptors > pipe ...)
@@ -45,7 +46,7 @@ import { ImageModel } from "src/common/entities/image.entity";
     }),
   ],
   controllers: [PostsController],
-  providers: [PostsService],
+  providers: [PostsService, PostImagesService],
 })
 export class PostsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
