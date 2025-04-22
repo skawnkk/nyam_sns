@@ -2,7 +2,7 @@ import { BadRequestException, Module } from "@nestjs/common";
 import { CommonService } from "./common.service";
 import { CommonController } from "./common.controller";
 import { MulterModule } from "@nestjs/platform-express";
-import { extname, join } from "path";
+import { extname } from "path";
 import * as multer from "multer";
 import { TEMP_FOLDER_PATH } from "./const/path.const";
 import { v4 as uuid } from "uuid";
@@ -36,7 +36,11 @@ import { UsersModule } from "src/users/users.module";
       storage: multer.diskStorage({
         destination: (req, file, cb) => {
           // 모든 이미지는 1차적으로 TEMP 폴더에 저장
-          cb(null, join(TEMP_FOLDER_PATH, `${uuid()}${extname(file.originalname)}`));
+          cb(null, TEMP_FOLDER_PATH);
+        },
+        filename: (req, file, cb) => {
+          // 파일 이름은 filename 옵션에서...!
+          cb(null, `${uuid()}${extname(file.originalname)}`);
         },
       }),
     }),

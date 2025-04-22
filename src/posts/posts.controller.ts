@@ -59,7 +59,7 @@ export class PostsController {
     // 여기서 post생성 후 에러가 생겼다면 post생성이 일어나면 안된다. > transaction
     const post = await this.postsService.createPost(authorId, body, qr);
 
-    for (let i = 0; i < body.images.length, i++; ) {
+    for (let i = 0; i < body.images.length; i++) {
       await this.postImagesService.createPostImage(
         {
           order: i,
