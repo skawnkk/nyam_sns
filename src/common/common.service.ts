@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { BasePaginationDto } from "./dto/base-pagination.dto";
-import { FindManyOptions, FindOptionsOrder, FindOptionsWhere, Repository } from "typeorm";
+import {
+  FindManyOptions,
+  FindOptionsOrder,
+  FindOptionsWhere,
+  Repository,
+} from "typeorm";
 import { BaseModel } from "./entities/base.entity";
 import { FILTER_MAPPER } from "./const/filter-mapper.const";
 import { ENV_HOST_KEY, ENV_PRPTOCOL_KEY } from "./const/env-keys.const";
@@ -11,7 +16,12 @@ import { ConfigService } from "@nestjs/config";
 export class CommonService {
   constructor(private readonly configService: ConfigService) {}
 
-  paginate<T extends BaseModel>(dto: BasePaginationDto, repository: Repository<T>, overrideFindOptions: FindManyOptions<T> = {}, path: string) {
+  paginate<T extends BaseModel>(
+    dto: BasePaginationDto,
+    repository: Repository<T>,
+    overrideFindOptions: FindManyOptions<T> = {},
+    path: string,
+  ) {
     if (dto.page) {
       return this.pagePaginate(dto, repository, overrideFindOptions);
     } else {
@@ -19,7 +29,11 @@ export class CommonService {
     }
   }
 
-  private async pagePaginate<T extends BaseModel>(dto: BasePaginationDto, repository: Repository<T>, overrideFindOptions: FindManyOptions<T> = {}) {
+  private async pagePaginate<T extends BaseModel>(
+    dto: BasePaginationDto,
+    repository: Repository<T>,
+    overrideFindOptions: FindManyOptions<T> = {},
+  ) {
     const findOptions = this.composeFindOptions<T>(dto);
 
     const [data, count] = await repository.findAndCount({
@@ -45,7 +59,10 @@ export class CommonService {
       ...overrideFindOptions,
     });
 
-    const lastItem = results.length > 0 && results.length === dto.take ? results[results.length - 1] : null;
+    const lastItem =
+      results.length > 0 && results.length === dto.take
+        ? results[results.length - 1]
+        : null;
     const protocol = this.configService.get(ENV_PRPTOCOL_KEY);
     const host = this.configService.get(ENV_HOST_KEY);
     const nextUrl = lastItem && new URL(`${protocol}://${host}/${path}`);
@@ -53,7 +70,10 @@ export class CommonService {
     if (nextUrl) {
       for (const key of Object.keys(dto)) {
         if (dto[key]) {
-          if (key !== "where__id__more_than" && key !== "where__id__less_than") {
+          if (
+            key !== "where__id__more_than" &&
+            key !== "where__id__less_than"
+          ) {
             nextUrl.searchParams.append(key, dto[key]);
           }
         }
@@ -79,7 +99,9 @@ export class CommonService {
     }
   }
 
-  private composeFindOptions<T extends BaseModel>(dto: BasePaginationDto): FindManyOptions<T> {
+  private composeFindOptions<T extends BaseModel>(
+    dto: BasePaginationDto,
+  ): FindManyOptions<T> {
     let where: FindOptionsWhere<T> = {};
     let order: FindOptionsOrder<T> = {};
 
@@ -97,14 +119,24 @@ export class CommonService {
       }
     }
 
-    return { where, order, take: dto.take, skip: dto.page ? dto.take * (dto.page - 1) : null };
+    return {
+      where,
+      order,
+      take: dto.take,
+      skip: dto.page ? dto.take * (dto.page - 1) : null,
+    };
   }
 
-  private parseWhereFilter<T extends BaseModel>(key: string, value: any): FindOptionsWhere<T> | FindOptionsOrder<T> {
+  private parseWhereFilter<T extends BaseModel>(
+    key: string,
+    value: any,
+  ): FindOptionsWhere<T> | FindOptionsOrder<T> {
     const options: FindOptionsWhere<T> | FindOptionsOrder<T> = {};
     const split = key.split("__");
     if (split.length !== 2 && split.length !== 3) {
-      throw new BadRequestException(`order 필터는 '__'으로 split했을때 길이가 2또는 3이어야 합니다. 문제되는 key: ${key}`);
+      throw new BadRequestException(
+        `order 필터는 '__'으로 split했을때 길이가 2또는 3이어야 합니다. 문제되는 key: ${key}`,
+      );
     }
 
     if (split.length === 2) {

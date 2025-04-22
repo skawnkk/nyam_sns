@@ -1,4 +1,10 @@
-import { BadRequestException, MiddlewareConsumer, Module, NestModule, RequestMethod } from "@nestjs/common";
+import {
+  BadRequestException,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { PostsController } from "./posts.controller";
 import { PostsModel } from "./entities/posts.entity";
@@ -50,6 +56,8 @@ import { PostImagesService } from "./image/images.service";
 })
 export class PostsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LogMiddleware).forRoutes({ path: "posts*", method: RequestMethod.ALL });
+    consumer
+      .apply(LogMiddleware)
+      .forRoutes({ path: "posts*", method: RequestMethod.ALL });
   }
 }

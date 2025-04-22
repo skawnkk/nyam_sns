@@ -1,4 +1,4 @@
-import { Body, Controller, Headers, Post, UseGuards, Request } from "@nestjs/common";
+import { Body, Controller, Headers, Post, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { BasicTokenGuard } from "./guard/basic-token.guard";
 import { RefreshTokenGuard } from "./guard/bearer-token.guard";

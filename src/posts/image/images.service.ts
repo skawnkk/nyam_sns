@@ -15,7 +15,9 @@ export class PostImagesService {
   ) {}
 
   getRepository(qr?: QueryRunner) {
-    return qr ? qr.manager.getRepository<ImageModel>(ImageModel) : this.imageRepository;
+    return qr
+      ? qr.manager.getRepository<ImageModel>(ImageModel)
+      : this.imageRepository;
   }
 
   async createPostImage(dto: CreatePostImageDto, qr?: QueryRunner) {
@@ -29,12 +31,12 @@ export class PostImagesService {
     }
 
     const fileName = basename(tempFilePath);
-    const postPath = join(POST_IMAGE_PATH, fileName); //public/posts/image.jpg
+    const postPath = join(POST_IMAGE_PATH, fileName);
 
     // save (파일 옮기기전 에러가 있다면 처리)
     const result = await repository.save({ ...dto });
 
-    // 파일 옮기기 1 > 2
+    // 파일 옮기기 1 > 2 (temp -> public/posts)
     await promises.rename(tempFilePath, postPath);
 
     return result;

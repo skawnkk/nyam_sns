@@ -23,7 +23,10 @@ export const TEMP_FOLDER_PATH = join(PUBLIC_FOLDER_NAME, TEMP_FOLDER_NAME);
 
 // 절대경로 x
 // 포스트 이미지 경로 ex: {프론트서버주소}/public/posts/xxx.jpg
-export const POST_PUBLIC_IMAGE_PATH = join(PUBLIC_FOLDER_NAME, POSTS_FOLDER_NAME);
+export const POST_PUBLIC_IMAGE_PATH = join(
+  PUBLIC_FOLDER_NAME,
+  POSTS_FOLDER_NAME,
+);
 
 // 임시 이미지 경로
 export const TEMP_IMAGE_PATH = join(PUBLIC_FOLDER_NAME, TEMP_FOLDER_NAME);

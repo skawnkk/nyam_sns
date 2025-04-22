@@ -6,7 +6,10 @@ import * as bcrypt from "bcrypt";
 import { CreateUserDto } from "src/users/dto/create-user.dto";
 import { UpdateUserDto } from "src/users/dto/update-user.dto";
 import { ConfigService } from "@nestjs/config";
-import { ENV_HASH_ROUNDS_KEY, ENV_JWT_SECRET_KEY } from "src/common/const/env-keys.const";
+import {
+  ENV_HASH_ROUNDS_KEY,
+  ENV_JWT_SECRET_KEY,
+} from "src/common/const/env-keys.const";
 
 @Injectable()
 export class AuthService {
@@ -57,8 +60,14 @@ export class AuthService {
   }
 
   async registerWithEmail(users: CreateUserDto) {
-    const hash = await bcrypt.hash(users.password, Number(this.configService.get(ENV_HASH_ROUNDS_KEY))); //round:10 -> 2^10번 해싱, 높을 수록 속도가 느려진다. salt는 .hash()에서 자동으로 생성한다.
-    const newUser = await this.usersService.postUsers({ ...users, password: hash });
+    const hash = await bcrypt.hash(
+      users.password,
+      Number(this.configService.get(ENV_HASH_ROUNDS_KEY)),
+    ); //round:10 -> 2^10번 해싱, 높을 수록 속도가 느려진다. salt는 .hash()에서 자동으로 생성한다.
+    const newUser = await this.usersService.postUsers({
+      ...users,
+      password: hash,
+    });
     return this.loginUser(newUser);
   }
 
@@ -95,8 +104,10 @@ export class AuthService {
   //token 검증
   verifyToken(token: string) {
     try {
-      return this.jwtService.verify(token, { secret: this.configService.get(ENV_JWT_SECRET_KEY) });
-    } catch {
+      return this.jwtService.verify(token, {
+        secret: this.configService.get(ENV_JWT_SECRET_KEY),
+      });
+    } catch (e) {
       throw new UnauthorizedException("Token is expired or invalid");
     }
   }
