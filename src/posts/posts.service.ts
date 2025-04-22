@@ -22,16 +22,26 @@ export class PostsService {
 
   async generatePosts(userId: number) {
     for (let i = 0; i < 100; i++) {
-      this.createPost(userId, { title: `title${i}`, content: `content${i}`, images: [] });
+      this.createPost(userId, {
+        title: `title${i}`,
+        content: `content${i}`,
+        images: [],
+      });
     }
   }
 
   async paginatePosts(dto: PaginatePostDto) {
-    return this.commonService.paginate(dto, this.postsRepository, { ...DEFAULT_POST_FIND_OPTIONS }, "posts");
+    return this.commonService.paginate(
+      dto,
+      this.postsRepository,
+      { ...DEFAULT_POST_FIND_OPTIONS },
+      "posts",
+    );
   }
 
-  async getPostById(id: number) {
-    const post = await this.postsRepository.findOne({
+  async getPostById(id: number, qr?: QueryRunner) {
+    const repository = this.getRepository(qr);
+    const post = await repository.findOne({
       where: {
         id,
       },
@@ -47,7 +57,9 @@ export class PostsService {
 
   // query runner 로 부터 repository를 가져온다.
   getRepository(qr?: QueryRunner) {
-    return qr ? qr.manager.getRepository<PostsModel>(PostsModel) : this.postsRepository;
+    return qr
+      ? qr.manager.getRepository<PostsModel>(PostsModel)
+      : this.postsRepository;
   }
 
   //data를 생성하고 저장한다.
