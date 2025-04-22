@@ -24,14 +24,16 @@ export class TransactionInterceptor implements NestInterceptor {
     await qr.startTransaction();
 
     const req = context.switchToHttp().getRequest();
-    req.QueryRunner = qr;
+    req.queryRunner = qr;
 
     return next.handle().pipe(
-      catchError(async (e) => {
+      catchError(async () => {
         await qr.rollbackTransaction(); // 에러가 나면 트랜잭션을 종료하고 원상태로 롤백 (db에 post가 생성되지 않는다.)
         await qr.release(); // 쿼리러너 연결 종료
 
-        throw new InternalServerErrorException(e.message);
+        throw new InternalServerErrorException(
+          `${req.path} 요청 중 에러가 발생했어요.`,
+        );
       }),
       tap(async () => {
         await qr.commitTransaction(); // 변경 수용
