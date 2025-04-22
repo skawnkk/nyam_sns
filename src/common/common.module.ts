@@ -22,7 +22,8 @@ import { UsersModule } from "src/users/users.module";
       },
       fileFilter: (req, file, cb) => {
         const extension = extname(file.originalname); // 확장자 추출
-        const acceptExtensions = [".jpg", "jpeg", "png"];
+        const acceptExtensions = [".jpg", ".jpeg", ".png"];
+
         if (!acceptExtensions.includes(extension)) {
           return cb(new BadRequestException("jpg, jpeg, png 파일만 업로드 가능합니다."), false); //boolean -> 파일받을지 여부
         }
