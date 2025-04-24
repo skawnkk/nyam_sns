@@ -1,9 +1,9 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, Entity, ManyToOne } from "typeorm";
 import { BaseModel } from "./base.entity";
 import { IsEnum, IsInt, IsOptional, IsString } from "class-validator";
 import { join } from "path";
 import { Transform } from "class-transformer";
-import { POST_IMAGE_PATH, POST_PUBLIC_IMAGE_PATH } from "../const/path.const";
+import { POST_PUBLIC_IMAGE_PATH } from "../const/path.const";
 import { PostsModel } from "src/posts/entities/posts.entity";
 
 export enum ImageModelType {
@@ -37,6 +37,8 @@ export class ImageModel extends BaseModel {
   })
   path: string;
 
-  @ManyToOne((type) => PostsModel, (post) => post.images)
+  @ManyToOne(() => PostsModel, (post) => post.images, {
+    onDelete: "CASCADE",
+  })
   post?: PostsModel;
 }

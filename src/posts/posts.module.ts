@@ -10,7 +10,6 @@ import { PostsModel } from "./entities/posts.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "src/auth/auth.module";
 import { UsersModule } from "src/users/users.module";
-import { LogMiddleware } from "src/common/middleware/log.middleware";
 import { CommonModule } from "src/common/common.module";
 import { ImageModel } from "src/common/entities/image.entity";
 import { PostImagesService } from "./image/images.service";
@@ -29,10 +28,4 @@ import { PostImagesService } from "./image/images.service";
   controllers: [PostsController],
   providers: [PostsService, PostImagesService],
 })
-export class PostsModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LogMiddleware)
-      .forRoutes({ path: "posts", method: RequestMethod.POST }); // forRoutes 적용하지 않으면 실행되지 않음
-  }
-}
+export class PostsModule {}

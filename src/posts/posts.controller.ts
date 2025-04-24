@@ -37,6 +37,7 @@ export class PostsController {
   }
 
   @Get(":id")
+  @UseInterceptors(TransactionInterceptor)
   async getPost(@Param("id", ParseIntPipe) id: number, @QueryRunner() qr: QR) {
     return this.postsService.getPostById(id, qr);
   }
@@ -51,7 +52,7 @@ export class PostsController {
   @Post()
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(TransactionInterceptor)
-  async createPost(
+  async postPosts(
     @User("id", ParseIntPipe) authorId: UsersModel["id"],
     @Body() body: CreatePostDto,
     @QueryRunner() qr: QR,

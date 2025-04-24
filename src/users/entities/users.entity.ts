@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
 import { RolesEnum } from "../const/roles.const";
 import { PostsModel } from "src/posts/entities/posts.entity";
 import { BaseModel } from "src/common/entities/base.entity";
@@ -7,6 +7,8 @@ import { lengthValidationMessage } from "src/common/validation-message/length-va
 import { typeValidationMessage } from "src/common/validation-message/type-validation.message";
 import { emailValidationMessage } from "src/common/validation-message/email-validation.message";
 import { Expose } from "class-transformer";
+import { ChatsModel } from "src/chats/entities/chats.entity";
+import { MessagesModel } from "src/chats/messages/entities/messasges.entity";
 
 @Entity()
 export class UsersModel extends BaseModel {
@@ -49,4 +51,11 @@ export class UsersModel extends BaseModel {
 
   @OneToMany(() => PostsModel, (post) => post.author)
   posts: PostsModel[];
+
+  @ManyToMany(() => ChatsModel, (chat) => chat.users)
+  @JoinTable() // ManyToMany 관계일때 둘중하나에 JoinTable 적용해서 3개의 관계를 만들어줌
+  chats: ChatsModel[];
+
+  @OneToMany(() => MessagesModel, (message) => message.author)
+  messages: MessagesModel;
 }
