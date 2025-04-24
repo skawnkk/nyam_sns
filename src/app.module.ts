@@ -1,4 +1,10 @@
-import { ClassSerializerInterceptor, Module } from "@nestjs/common";
+import {
+  ClassSerializerInterceptor,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { PostsModule } from "./posts/posts.module";
@@ -20,6 +26,7 @@ import {
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { PUBLIC_FOLDER_PATH } from "./common/const/path.const";
 import { ImageModel } from "./common/entities/image.entity";
+import { LogMiddleware } from "./common/middleware/log.middleware";
 
 @Module({
   imports: [
@@ -55,4 +62,13 @@ import { ImageModel } from "./common/entities/image.entity";
     },
   ],
 })
-export class AppModule {}
+
+// 로그모니터링 서비스 및 파일을 생성한다거나, 보안 요소 개발을 미들웨어에서 처리
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LogMiddleware).forRoutes({
+      path: "*",
+      method: RequestMethod.ALL,
+    });
+  }
+}

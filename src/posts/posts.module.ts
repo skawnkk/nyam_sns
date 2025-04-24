@@ -33,6 +33,6 @@ export class PostsModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LogMiddleware)
-      .forRoutes({ path: "posts*", method: RequestMethod.ALL });
+      .forRoutes({ path: "posts", method: RequestMethod.POST }); // forRoutes 적용하지 않으면 실행되지 않음
   }
 }
