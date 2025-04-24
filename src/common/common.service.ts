@@ -58,7 +58,6 @@ export class CommonService {
       ...findOptions,
       ...overrideFindOptions,
     });
-
     const lastItem =
       results.length > 0 && results.length === dto.take
         ? results[results.length - 1]
@@ -87,16 +86,16 @@ export class CommonService {
       }
 
       nextUrl.searchParams.append(key, lastItem.id.toString());
-
-      return {
-        data: results,
-        cursor: {
-          after: lastItem?.id ?? null,
-        },
-        count: results.length,
-        next: nextUrl?.toString() ?? null,
-      };
     }
+
+    return {
+      data: results,
+      cursor: {
+        after: lastItem?.id ?? null,
+      },
+      count: results.length,
+      next: nextUrl?.toString() ?? null,
+    };
   }
 
   private composeFindOptions<T extends BaseModel>(
