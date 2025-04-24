@@ -40,7 +40,11 @@ export class UsersModel extends BaseModel {
   @Column()
   password: string;
 
-  @Column({ type: "enum", enum: Object.values(RolesEnum), default: RolesEnum.USER })
+  @Column({
+    type: "enum",
+    enum: Object.values(RolesEnum),
+    default: RolesEnum.USER,
+  })
   role: RolesEnum;
 
   @OneToMany(() => PostsModel, (post) => post.author)

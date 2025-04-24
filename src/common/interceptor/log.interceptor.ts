@@ -3,7 +3,6 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
-  UseInterceptors,
 } from "@nestjs/common";
 import { Observable, tap } from "rxjs";
 
@@ -28,7 +27,7 @@ export class LogInterceptor implements NestInterceptor {
 
     // -> handle() :라우트의 로직이 모두 실행되고 observable로 응답이 반환된다.
     return next.handle().pipe(
-      tap((observable) => {
+      tap(() => {
         const afterRequestTime = new Date();
 
         console.log(
