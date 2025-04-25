@@ -2,6 +2,8 @@ import {
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -12,30 +14,70 @@ import { CreateChatDto } from "./dto/create-chat.dto";
 import { ChatsService } from "./chats.service";
 import { ChatsMessagesService } from "./messages/messages.service";
 import {
+  UnauthorizedException,
   UseFilters,
-  UseGuards,
   UsePipes,
   ValidationPipe,
 } from "@nestjs/common";
 import { SocketCatchHttpExceptionFilter } from "src/common/exception-filter/socket-catch-http.exception-filter";
-import { SocketBearerTokenGuard } from "src/auth/guard/socket/socket-bearer-token.guard";
 import { UsersModel } from "src/users/entities/users.entity";
 import { CreateChatsMessageDto } from "./messages/dto/create-message.dto";
+import { AuthService } from "src/auth/auth.service";
+import { UsersService } from "src/users/users.service";
 
 @WebSocketGateway({
   namespace: "chats", //ws://localhost:3000/chats
 })
-export class ChatsGateway implements OnGatewayConnection {
+export class ChatsGateway
+  implements OnGatewayConnection, OnGatewayInit, OnGatewayDisconnect
+{
   constructor(
     private readonly chatsService: ChatsService,
+    private readonly authService: AuthService,
+    private readonly userService: UsersService,
     private readonly messageService: ChatsMessagesService,
   ) {}
 
   @WebSocketServer()
   server: Server;
 
-  handleConnection(socket: Socket) {
-    console.log(`on connect called: ${socket.id}`);
+  afterInit() {
+    //@Param - server: Server 상위에 선언된 server와 동일객체
+    console.log(`init gateway`);
+  }
+  // 0. Lifecycle Hook: 소켓 연결 시 최초 1회 실행되는 hook
+  // socket 객체에 저장된 값은 연결이 끊기기 전까지 계속 유지됨
+  //
+  // ⚠️ 주의사항
+  // - 소켓은 연결 이후 토큰이 갱신되더라도, 기존에 받아온 토큰 값을 계속 유지함
+  //   (예: access token 재발급되어도 반영 안 됨)
+  // - 따라서 모든 이벤트마다 토큰을 재검증할 필요는 없으며,
+  //   최초 연결 시점에만 인증 처리를 하고 socket.user 등에 사용자 정보를 저장하면 효율적
+
+  async handleConnection(socket: Socket & { user: UsersModel }) {
+    const header = socket.handshake.headers;
+    const rawToken = header["authorization"];
+
+    if (!rawToken) {
+      socket.disconnect();
+      throw new UnauthorizedException("Token is not found");
+    }
+    try {
+      const token = this.authService.extractTokenFromHeader(rawToken, true);
+      const payload = await this.authService.verifyToken(token);
+      const user = await this.userService.getUserByEmail(payload.email);
+
+      socket.user = user;
+
+      return true;
+    } catch (e) {
+      socket.disconnect();
+      throw new WsException("토큰이 유효하지 않습니다.");
+    }
+  }
+
+  handleDisconnect(socket: Socket) {
+    console.log(`disconnected ${socket.id}`);
   }
 
   //1.
@@ -50,7 +92,6 @@ export class ChatsGateway implements OnGatewayConnection {
     }),
   )
   @UseFilters(SocketCatchHttpExceptionFilter)
-  @UseGuards(SocketBearerTokenGuard)
   @SubscribeMessage("create_chat")
   async createChat(
     @MessageBody() dto: CreateChatDto,
@@ -72,7 +113,6 @@ export class ChatsGateway implements OnGatewayConnection {
     }),
   )
   @UseFilters(SocketCatchHttpExceptionFilter)
-  @UseGuards(SocketBearerTokenGuard)
   @SubscribeMessage("enter_chat")
   // 여러개의 방 chat id를 리스트로 받음
   async enterChat(
@@ -105,7 +145,6 @@ export class ChatsGateway implements OnGatewayConnection {
     }),
   )
   @UseFilters(SocketCatchHttpExceptionFilter)
-  @UseGuards(SocketBearerTokenGuard)
   @SubscribeMessage("send_message")
   async sendMessage(
     @MessageBody() data: CreateChatsMessageDto,
