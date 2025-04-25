@@ -6,7 +6,7 @@ import { IsEmail, IsString, Length } from "class-validator";
 import { lengthValidationMessage } from "src/common/validation-message/length-validation.message";
 import { typeValidationMessage } from "src/common/validation-message/type-validation.message";
 import { emailValidationMessage } from "src/common/validation-message/email-validation.message";
-import { Expose } from "class-transformer";
+import { Exclude, Expose } from "class-transformer";
 import { ChatsModel } from "src/chats/entities/chats.entity";
 import { MessagesModel } from "src/chats/messages/entities/messasges.entity";
 
@@ -40,6 +40,9 @@ export class UsersModel extends BaseModel {
     message: typeValidationMessage,
   })
   @Column()
+  @Exclude({
+    toPlainOnly: true, //응답 데이터에 노출되지 않도록 처리 (직렬화) (<-> toClassOnly 요청 인스턴스에서도 숨김)
+  })
   password: string;
 
   @Column({
