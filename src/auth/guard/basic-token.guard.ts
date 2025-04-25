@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { AuthService } from "../auth.service";
 
 @Injectable()
@@ -16,7 +21,10 @@ export class BasicTokenGuard implements CanActivate {
 
     const { password, email } = this.authService.decodeBasicToken(token);
 
-    const user = await this.authService.authenticateWithEmailAndPassword({ email, password });
+    const user = await this.authService.authenticateWithEmailAndPassword({
+      email,
+      password,
+    });
 
     req.user = user; //응답으로 돌아갈 때까지 request는 유효하다.
     return true;

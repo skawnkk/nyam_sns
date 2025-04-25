@@ -28,7 +28,11 @@ export class AuthService {
       type: isRefreshToken ? "refresh" : "access",
     };
 
-    return this.jwtService.sign(payload, { secret: this.configService.get(ENV_JWT_SECRET_KEY), expiresIn: isRefreshToken ? 3600 : 300 });
+    return this.jwtService.sign(payload, {
+      secret: this.configService.get(ENV_JWT_SECRET_KEY),
+      expiresIn: "7d",
+      // expiresIn: isRefreshToken ? 3600 : 3000,
+    });
   }
 
   //accessToken, refreshToken을 반환하는 메소드

@@ -14,10 +14,10 @@ export class ChatsMessagesService {
     private readonly commonService: CommonService,
   ) {}
 
-  async createMessage(dto: CreateChatsMessageDto) {
+  async createMessage(dto: CreateChatsMessageDto, authorId: number) {
     const message = await this.messagesRepository.save({
       chat: { id: dto.chatId }, // priamry key로 연결된다
-      author: { id: dto.authorId },
+      author: { id: authorId },
       message: dto.message,
     });
 

@@ -34,7 +34,7 @@ export class ChatMessagesController {
   }
 
   @Post()
-  postMessage(@Body() dto: CreateChatsMessageDto) {
-    this.chatMessageService.createMessage(dto);
+  postMessage(@Body() dto: CreateChatsMessageDto, authorId: number) {
+    this.chatMessageService.createMessage(dto, authorId);
   }
 }
