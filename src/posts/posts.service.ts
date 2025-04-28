@@ -4,9 +4,9 @@ import { PostsModel } from "./entities/posts.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
-import { PaginatePostDto } from "./dto/paginate-post.dto";
 import { CommonService } from "src/common/common.service";
 import { DEFAULT_POST_FIND_OPTIONS } from "./const/default-post-find-options.const";
+import { PaginatePostDto } from "./dto/paginate-post.dto";
 
 @Injectable()
 export class PostsService {

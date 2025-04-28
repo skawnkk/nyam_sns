@@ -3,9 +3,25 @@ import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
 import { HttpExceptionFilter } from "./common/exception-filter/http.exception-filter";
 import { LogInterceptor } from "./common/interceptor/log.interceptor";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    origin: true,
+    credentials: true,
+    exposedHeaders: ["Authorization"],
+  });
+
+  const config = new DocumentBuilder()
+    .setTitle("Sabujak")
+    .setDescription("사부작 API Description")
+    .setVersion("1.0")
+    .build();
+
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup("api", app, documentFactory);
 
   app.useGlobalPipes(
     new ValidationPipe({

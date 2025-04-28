@@ -17,13 +17,13 @@ export class ChatMessagesController {
 
   @Get()
   paginateMessages(
-    @Param("cid", ParseIntPipe) id: number, // chatId
+    @Param("cid", ParseIntPipe) cid: number, // chatId
     @Query() dto: paginateChatMessagesDto,
   ) {
     return this.chatMessageService.paginateMessages(dto, {
       where: {
         chat: {
-          id,
+          id: cid,
         },
       },
       relations: {
@@ -34,7 +34,10 @@ export class ChatMessagesController {
   }
 
   @Post()
-  postMessage(@Body() dto: CreateChatsMessageDto, authorId: number) {
-    this.chatMessageService.createMessage(dto, authorId);
+  postMessage(
+    @Param("cid", ParseIntPipe) cid: number, // chatId
+    @Body() dto: CreateChatsMessageDto,
+  ) {
+    this.chatMessageService.createMessage(dto, dto.authorId);
   }
 }

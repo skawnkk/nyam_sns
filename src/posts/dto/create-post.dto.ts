@@ -1,6 +1,7 @@
 import { IsOptional, IsString } from "class-validator";
 import { PostsModel } from "../entities/posts.entity";
 import { PickType } from "@nestjs/mapped-types";
+import { ApiProperty } from "@nestjs/swagger";
 
 //dto와 api가 1:1이 아닐 수 있어 일반적인 naming을 사용한다.
 
@@ -9,5 +10,6 @@ import { PickType } from "@nestjs/mapped-types";
 export class CreatePostDto extends PickType(PostsModel, ["title", "content"]) {
   @IsString({ each: true })
   @IsOptional()
+  @ApiProperty()
   images: string[] = [];
 }

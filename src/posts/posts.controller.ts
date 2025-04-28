@@ -23,6 +23,8 @@ import { QueryRunner as QR } from "typeorm";
 import { PostImagesService } from "./image/images.service";
 import { TransactionInterceptor } from "src/common/interceptor/transaction.interceptors";
 import { QueryRunner } from "src/common/decorator/query-runner.decorator";
+import { ApiOkResponse } from "@nestjs/swagger";
+import { PostsPaginateResponseDto } from "./dto/paginate-response.dto";
 
 @Controller("posts")
 export class PostsController {
@@ -32,6 +34,7 @@ export class PostsController {
   ) {}
 
   @Get()
+  @ApiOkResponse({ type: PostsPaginateResponseDto })
   getPosts(@Query() query: PaginatePostDto) {
     return this.postsService.paginatePosts(query);
   }

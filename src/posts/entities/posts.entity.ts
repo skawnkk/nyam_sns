@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
 import { BaseModel } from "src/common/entities/base.entity";
 import { ImageModel } from "src/common/entities/image.entity";
@@ -8,26 +9,32 @@ import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
 @Entity()
 export class PostsModel extends BaseModel {
   @ManyToOne(() => UsersModel, (users) => users.posts, { nullable: false })
+  @ApiProperty()
   author: UsersModel;
 
   @Column()
   @IsString({
     message: typeValidationMessage,
   })
+  @ApiProperty()
   title: string;
 
   @Column()
   @IsString({
     message: typeValidationMessage,
   })
+  @ApiProperty()
   content: string;
 
   @Column()
+  @ApiProperty()
   likeCount: number;
 
   @Column()
+  @ApiProperty()
   commentCount: number;
 
   @OneToMany(() => ImageModel, (image) => image.post)
+  @ApiProperty()
   images?: ImageModel[];
 }
