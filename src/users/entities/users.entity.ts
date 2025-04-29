@@ -1,4 +1,12 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  OneToOne,
+} from "typeorm";
 import { RolesEnum } from "../const/roles.const";
 import { PostsModel } from "src/posts/entities/posts.entity";
 import { BaseModel } from "src/common/entities/base.entity";
@@ -10,6 +18,7 @@ import { Exclude, Expose } from "class-transformer";
 import { ChatsModel } from "src/chats/entities/chats.entity";
 import { MessagesModel } from "src/chats/messages/entities/messasges.entity";
 import { ApiProperty } from "@nestjs/swagger";
+import { ImageModel } from "src/common/entities/image.entity";
 
 @Entity()
 export class UsersModel extends BaseModel {
@@ -96,4 +105,12 @@ export class UsersModel extends BaseModel {
   })
   @OneToMany(() => MessagesModel, (message) => message.author)
   messages: MessagesModel[];
+
+  @ApiProperty({
+    description: "프로필 사진",
+    type: () => ImageModel,
+  })
+  @OneToOne(() => ImageModel)
+  @JoinColumn()
+  image: ImageModel | null;
 }

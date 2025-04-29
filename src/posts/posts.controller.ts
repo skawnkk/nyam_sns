@@ -20,17 +20,17 @@ import { UpdatePostDto } from "./dto/update-post.dto";
 import { PaginatePostDto } from "./dto/paginate-post.dto";
 import { ImageModelType } from "src/common/entities/image.entity";
 import { QueryRunner as QR } from "typeorm";
-import { PostImagesService } from "./image/images.service";
 import { TransactionInterceptor } from "src/common/interceptor/transaction.interceptors";
 import { QueryRunner } from "src/common/decorator/query-runner.decorator";
 import { ApiOkResponse } from "@nestjs/swagger";
 import { PostsPaginateResponseDto } from "./dto/paginate-response.dto";
+import { ImagesService } from "src/common/image/images.service";
 
 @Controller("posts")
 export class PostsController {
   constructor(
     private readonly postsService: PostsService,
-    private readonly postImagesService: PostImagesService,
+    private readonly imagesService: ImagesService,
   ) {}
 
   @Get()
@@ -64,7 +64,7 @@ export class PostsController {
     const post = await this.postsService.createPost(authorId, body, qr);
 
     for (let i = 0; i < body.images.length; i++) {
-      await this.postImagesService.createPostImage(
+      await this.imagesService.createPostImage(
         {
           order: i,
           type: ImageModelType.POST_IMAGE,

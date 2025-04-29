@@ -18,5 +18,11 @@ export class UpdatePostDto extends PartialType(CreatePostDto) {
   @IsString({
     message: typeValidationMessage,
   })
+  subTitle?: string;
+
+  @IsOptional()
+  @IsString({
+    message: typeValidationMessage,
+  })
   content: string;
 }

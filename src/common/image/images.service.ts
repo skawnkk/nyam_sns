@@ -1,14 +1,23 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ImageModel } from "src/common/entities/image.entity";
+import { ImageModel, ImageModelType } from "src/common/entities/image.entity";
 import { QueryRunner, Repository } from "typeorm";
 import { CreatePostImageDto } from "./dto/create-image.dto";
 import { basename, join } from "path";
-import { POST_IMAGE_PATH, TEMP_FOLDER_PATH } from "src/common/const/path.const";
+import {
+  POST_IMAGE_PATH,
+  PROFILE_IMAGE_PATH,
+  TEMP_FOLDER_PATH,
+} from "src/common/const/path.const";
 import { promises } from "fs";
 
+const imagePathMap = {
+  [ImageModelType.POST_IMAGE]: POST_IMAGE_PATH,
+  [ImageModelType.PROFILE_IMAGE]: PROFILE_IMAGE_PATH,
+};
+
 @Injectable()
-export class PostImagesService {
+export class ImagesService {
   constructor(
     @InjectRepository(ImageModel)
     private readonly imageRepository: Repository<ImageModel>,
@@ -31,13 +40,13 @@ export class PostImagesService {
     }
 
     const fileName = basename(tempFilePath);
-    const postPath = join(POST_IMAGE_PATH, fileName);
+    const imagePath = join(imagePathMap[dto.type], fileName);
 
     // save (파일 옮기기전 에러가 있다면 처리)
     const result = await repository.save({ ...dto });
 
     // 파일 옮기기 1 > 2 (temp -> public/posts)
-    await promises.rename(tempFilePath, postPath);
+    await promises.rename(tempFilePath, imagePath);
 
     return result;
   }

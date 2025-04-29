@@ -9,6 +9,9 @@ export const PUBLIC_FOLDER_NAME = "public";
 // 포스트 이미지 저장 폴더명
 export const POSTS_FOLDER_NAME = "posts";
 
+// 프로필 이미지 저장 폴더명
+export const PROFILE_FOLDER_NAME = "profiles";
+
 // 임시 폴더 이름
 export const TEMP_FOLDER_NAME = "temp";
 
@@ -18,6 +21,9 @@ export const PUBLIC_FOLDER_PATH = join(PROJECT_ROOT_PATH, PUBLIC_FOLDER_NAME);
 // 포스트 이미지를 저장할 폴더 /{프로젝트의 위치}/public/posts
 export const POST_IMAGE_PATH = join(PUBLIC_FOLDER_PATH, POSTS_FOLDER_NAME);
 
+// 프로필 이미지를 저장할 폴더 /{프로젝트의 위치}/public/profiles
+export const PROFILE_IMAGE_PATH = join(PUBLIC_FOLDER_PATH, PROFILE_FOLDER_NAME);
+
 // 임시 파일들을 저장할 폴더 (모듈에 Multer가 등록되지 않은 상태 > 1차적으로 임시폴더에 저장)
 export const TEMP_FOLDER_PATH = join(PUBLIC_FOLDER_NAME, TEMP_FOLDER_NAME);
 
@@ -26,6 +32,11 @@ export const TEMP_FOLDER_PATH = join(PUBLIC_FOLDER_NAME, TEMP_FOLDER_NAME);
 export const POST_PUBLIC_IMAGE_PATH = join(
   PUBLIC_FOLDER_NAME,
   POSTS_FOLDER_NAME,
+);
+
+export const PROFILE_PUBLIC_IMAGE_PATH = join(
+  PUBLIC_FOLDER_NAME,
+  PROFILE_FOLDER_NAME,
 );
 
 // 임시 이미지 경로

@@ -30,6 +30,7 @@ import { LogMiddleware } from "./common/middleware/log.middleware";
 import { ChatsModule } from "./chats/chats.module";
 import { ChatsModel } from "./chats/entities/chats.entity";
 import { MessagesModel } from "./chats/messages/entities/messasges.entity";
+import { ImagesModule } from "./common/image/images.module";
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { MessagesModel } from "./chats/messages/entities/messasges.entity";
     AuthModule,
     CommonModule,
     ChatsModule,
+    ImagesModule,
   ],
   controllers: [AppController],
   providers: [

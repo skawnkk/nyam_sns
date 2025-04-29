@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsOptional, IsString } from "class-validator";
 import { BaseModel } from "src/common/entities/base.entity";
 import { ImageModel } from "src/common/entities/image.entity";
 import { typeValidationMessage } from "src/common/validation-message/type-validation.message";
@@ -18,6 +18,14 @@ export class PostsModel extends BaseModel {
   })
   @ApiProperty()
   title: string;
+
+  @Column({ nullable: true })
+  @IsString({
+    message: typeValidationMessage,
+  })
+  @ApiPropertyOptional()
+  @IsOptional()
+  subTitle?: string;
 
   @Column()
   @IsString({

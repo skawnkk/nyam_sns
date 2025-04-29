@@ -7,7 +7,11 @@ import { ApiProperty } from "@nestjs/swagger";
 
 //Pick, Omit, Partial-> type반환
 //PickType, OmitType, PartialType => class 반환 (dto 재사용 및 유효성 검증 유지)
-export class CreatePostDto extends PickType(PostsModel, ["title", "content"]) {
+export class CreatePostDto extends PickType(PostsModel, [
+  "title",
+  "content",
+  "subTitle",
+]) {
   @IsString({ each: true })
   @IsOptional()
   @ApiProperty()

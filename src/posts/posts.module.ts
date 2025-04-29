@@ -1,9 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { PostsController } from "./posts.controller";
 import { PostsModel } from "./entities/posts.entity";
@@ -12,7 +7,7 @@ import { AuthModule } from "src/auth/auth.module";
 import { UsersModule } from "src/users/users.module";
 import { CommonModule } from "src/common/common.module";
 import { ImageModel } from "src/common/entities/image.entity";
-import { PostImagesService } from "./image/images.service";
+import { ImagesModule } from "src/common/image/images.module";
 
 //미들웨어는 모듈에서 등록해주고, 적용할 method, route 정보를 전달해야한다.
 //가장 먼저 적용된다. (middleware > interceptors > pipe ...)
@@ -24,8 +19,9 @@ import { PostImagesService } from "./image/images.service";
     AuthModule,
     UsersModule,
     CommonModule,
+    ImagesModule,
   ],
   controllers: [PostsController],
-  providers: [PostsService, PostImagesService],
+  providers: [PostsService],
 })
 export class PostsModule {}
