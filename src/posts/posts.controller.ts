@@ -25,6 +25,7 @@ import { QueryRunner } from "src/common/decorator/query-runner.decorator";
 import { ApiOkResponse } from "@nestjs/swagger";
 import { PostsPaginateResponseDto } from "./dto/paginate-response.dto";
 import { ImagesService } from "src/common/image/images.service";
+import { PostsModel } from "./entities/posts.entity";
 
 @Controller("posts")
 export class PostsController {
@@ -41,6 +42,7 @@ export class PostsController {
 
   @Get(":id")
   @UseInterceptors(TransactionInterceptor)
+  @ApiOkResponse({ type: PostsModel })
   async getPost(@Param("id", ParseIntPipe) id: number, @QueryRunner() qr: QR) {
     return this.postsService.getPostById(id, qr);
   }
@@ -62,7 +64,6 @@ export class PostsController {
   ) {
     // 여기서 post생성 후 에러가 생겼다면 post생성이 일어나면 안된다. > transaction
     const post = await this.postsService.createPost(authorId, body, qr);
-
     for (let i = 0; i < body.images.length; i++) {
       await this.imagesService.createPostImage(
         {

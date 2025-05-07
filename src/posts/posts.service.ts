@@ -49,7 +49,7 @@ export class PostsService {
     });
 
     if (!post) {
-      throw new NotFoundException();
+      throw new NotFoundException(`id:${id}의 post는 존재하지 않습니다.`);
     }
 
     return post;
@@ -118,5 +118,15 @@ export class PostsService {
     await this.postsRepository.delete(id);
 
     return id;
+  }
+
+  async checkPostExists(id: number) {
+    const exists = await this.postsRepository.findOne({
+      where: {
+        id,
+      },
+    });
+
+    return exists;
   }
 }

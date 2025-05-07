@@ -28,5 +28,5 @@ export class BasePaginationDto {
   @IsOptional()
   @IsNumber()
   @ApiPropertyOptional()
-  take?: number = 200; // TODO: 수정
+  take?: number = 20;
 }

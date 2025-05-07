@@ -23,5 +23,6 @@ import { ImagesModule } from "src/common/image/images.module";
   ],
   controllers: [PostsController],
   providers: [PostsService],
+  exports: [PostsService],
 })
 export class PostsModule {}

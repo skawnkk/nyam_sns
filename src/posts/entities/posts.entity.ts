@@ -5,6 +5,7 @@ import { ImageModel } from "src/common/entities/image.entity";
 import { typeValidationMessage } from "src/common/validation-message/type-validation.message";
 import { UsersModel } from "src/users/entities/users.entity";
 import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { CommentModel } from "../comments/entity/comment.entitiy";
 
 @Entity()
 export class PostsModel extends BaseModel {
@@ -42,7 +43,11 @@ export class PostsModel extends BaseModel {
   @ApiProperty()
   commentCount: number;
 
-  @OneToMany(() => ImageModel, (image) => image.post)
   @ApiProperty()
+  @OneToMany(() => CommentModel, (comment) => comment.post)
+  comments: CommentModel[];
+
+  @OneToMany(() => ImageModel, (image) => image.post)
+  @ApiProperty({ type: [ImageModel] })
   images?: ImageModel[];
 }

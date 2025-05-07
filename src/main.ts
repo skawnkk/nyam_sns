@@ -4,12 +4,15 @@ import { ValidationPipe } from "@nestjs/common";
 import { HttpExceptionFilter } from "./common/exception-filter/http.exception-filter";
 import { LogInterceptor } from "./common/interceptor/log.interceptor";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import * as cookieParser from "cookie-parser";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.use(cookieParser());
+
   app.enableCors({
-    origin: true,
+    origin: `http://localhost:3001`, //true,
     credentials: true,
     exposedHeaders: ["Authorization"],
   });

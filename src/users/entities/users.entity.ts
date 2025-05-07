@@ -19,6 +19,7 @@ import { ChatsModel } from "src/chats/entities/chats.entity";
 import { MessagesModel } from "src/chats/messages/entities/messasges.entity";
 import { ApiProperty } from "@nestjs/swagger";
 import { ImageModel } from "src/common/entities/image.entity";
+import { CommentModel } from "src/posts/comments/entity/comment.entitiy";
 
 @Entity()
 export class UsersModel extends BaseModel {
@@ -50,7 +51,8 @@ export class UsersModel extends BaseModel {
     description: "닉네임과 이메일을 합친 가상 필드 (출력용)",
     example: "namjoo namjoo@example.com",
   })
-  @Expose({ toPlainOnly: true })
+  // api응답에 노출시키려면 Expose사용
+  // @Expose({ toPlainOnly: true })
   get nicknameAndEmail() {
     return `${this.nickname} ${this.email}`;
   }
@@ -113,4 +115,11 @@ export class UsersModel extends BaseModel {
   @OneToOne(() => ImageModel)
   @JoinColumn()
   image: ImageModel | null;
+
+  @ApiProperty({
+    description: "작성한 댓글",
+    type: () => CommentModel,
+  })
+  @OneToMany(() => CommentModel, (comments) => comments.author)
+  postComments: CommentModel[];
 }
