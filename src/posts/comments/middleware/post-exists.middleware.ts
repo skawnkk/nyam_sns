@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Injectable,
   NestMiddleware,
-  NotFoundException,
 } from "@nestjs/common";
 import { NextFunction, Request, Response } from "express";
 import { PostsService } from "src/posts/posts.service";
@@ -17,10 +16,10 @@ export class PostExistsMiddleware implements NestMiddleware {
       throw new BadRequestException("postId 전달이 필수입니다.");
     }
 
-    const postExists = await this.postServcie.checkPostExists(parseInt(postId));
-
+    const postExists = await this.postServcie.checkPostExists(+postId);
+    console.log("postExists", postExists);
     if (!postExists) {
-      return new NotFoundException(`id:${postId} 포스트가 존재하지 않습니다.`);
+      new BadRequestException(`id:${postId} 포스트가 존재하지 않습니다.`);
     }
 
     next();

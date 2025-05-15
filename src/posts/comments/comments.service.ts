@@ -3,10 +3,10 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { FindManyOptions, Repository } from "typeorm";
 import { CommentModel } from "./entity/comment.entitiy";
 import { CommonService } from "src/common/common.service";
-import { PaginateCommentDto } from "./dto/paginate-comment.dto";
 import { CreateCommentDto } from "./dto/create-comment.dto";
 import { UsersModel } from "src/users/entities/users.entity";
 import { DEFAULT_COMMENT_FIND_OPTIONS } from "./const/default-comment-find-options.conts";
+import { BasePaginationDto } from "src/common/dto/base-pagination.dto";
 
 @Injectable()
 export class CommentsService {
@@ -16,7 +16,7 @@ export class CommentsService {
     private readonly commonService: CommonService,
   ) {}
   paginateComments(
-    paginateCommentDto: PaginateCommentDto,
+    paginateCommentDto: BasePaginationDto,
     postId: number,
     overrideFindOptions: FindManyOptions<CommentModel>,
   ) {
